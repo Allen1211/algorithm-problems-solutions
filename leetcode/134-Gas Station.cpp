@@ -50,26 +50,28 @@ cost = [3,4,3]
 
 using namespace std;
 
+/*
+* 如何用反证法证明贪心策略的有效性
+* https://leetcode-cn.com/problems/gas-station/solution/jia-you-zhan-by-leetcode/
+*/
 class Solution {
    public:
-    bool canComplete(vector<int>& gas, vector<int>& cost, int begin) {
-        int fuel = 0;
-        int i = begin;
-        do {
-            fuel += gas[i] - cost[i];
-            if (fuel < 0) return false;
-            i = (i + 1) % gas.size();
-        } while (i != begin);
-        return true;
-    }
-
     int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
         int size = gas.size();
+        int totalGas = 0;
+        int currGas = 0;
+        int start = 0;
         for (int i = 0; i < size; i++) {
-            if (gas[i] >= cost[i] && canComplete(gas, cost, i)) {
-                return i;
+            totalGas += gas[i] - cost[i];
+            currGas += gas[i] - cost[i];
+            /* 如果从 start号加油站不能到达 i号加油站 （到i-1号时的剩余油量不足以到达i)
+            *  可以证明: 从start+1到i号中的任何一个加油站出发都不能到达i号加油站
+            */
+            if(currGas < 0){
+                start = i + 1;
+                currGas = 0;
             }
         }
-        return -1;
+        return totalGas >= 0 ? start : -1;
     }
 };
