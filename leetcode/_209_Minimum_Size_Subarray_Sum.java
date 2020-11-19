@@ -9,26 +9,15 @@ public class _209_Minimum_Size_Subarray_Sum {
 
     class Solution {
         public int minSubArrayLen(int s, int[] nums) {
-            if (nums.length == 0) {
-                return 0;
-            }
-            int result = nums.length + 1;
-            int sum = nums[0];
-            for (int i = 0, j = 0; i < nums.length && j < nums.length;) {
-                if (sum >= s) {
-                    if (i == j)
-                        return 1;
-                    result = Math.min(j - i + 1, result);
-                    sum -= nums[i];
-                    i += 1;
-                } else {
-                    j += 1;
-                    if (j < nums.length) {
-                        sum += nums[j];
-                    }
+            int result = Integer.MAX_VALUE;
+            for (int i = 0, j = 0, sum = 0; i < nums.length; i++) {
+                sum += nums[i];
+                while(j <= i && sum >= s) {
+                    result = Math.min(result, i - j + 1);
+                    sum -= nums[j++];
                 }
             }
-            return result != nums.length + 1 ? result : 0;
+            return result == Integer.MAX_VALUE ? 0 : result;
         }
     }
 }
